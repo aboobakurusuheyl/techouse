@@ -17,13 +17,26 @@ class CategoryResource extends Resource
 {
     protected static ?string $model = Category::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-squares-2x2';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                //
+                Forms\Components\TextInput::make('name')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('slug')
+                    ->required()
+                    ->maxLength(255)
+                    ->unique(ignoreRecord: true),
+                Forms\Components\Textarea::make('description')
+                    ->columnSpanFull(),
+                Forms\Components\TextInput::make('icon')
+                    ->maxLength(255)
+                    ->helperText('Icon class name (e.g., heroicon-o-device-phone-mobile)'),
+                Forms\Components\Toggle::make('is_active')
+                    ->default(true),
             ]);
     }
 
@@ -31,10 +44,28 @@ class CategoryResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('name')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('slug')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('description')
+                    ->limit(50),
+                Tables\Columns\TextColumn::make('icon')
+                    ->badge(),
+                Tables\Columns\IconColumn::make('is_active')
+                    ->boolean(),
+                Tables\Columns\TextColumn::make('products_count')
+                    ->counts('products')
+                    ->label('Products'),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\TernaryFilter::make('is_active'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

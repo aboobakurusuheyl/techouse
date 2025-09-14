@@ -51,7 +51,15 @@ Route::get('/products', function (Request $request) {
         $query->where('is_featured', true);
     }
 
-    return $query->paginate(12);
+    $products = $query->paginate(12);
+    
+    // Transform the data to include proper image URLs
+    $products->getCollection()->transform(function ($product) {
+        $product->image_urls = $product->image_urls;
+        return $product;
+    });
+
+    return $products;
 });
 
 Route::get('/products/{slug}', function ($slug) {

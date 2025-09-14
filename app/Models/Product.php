@@ -52,4 +52,18 @@ class Product extends Model
     {
         return $this->sale_price ? 'ރ' . number_format($this->sale_price, 2) : null;
     }
+
+    public function getImageUrlsAttribute(): array
+    {
+        if (!$this->images) {
+            return [];
+        }
+
+        return collect($this->images)->map(function ($image) {
+            if (str_starts_with($image, 'http')) {
+                return $image;
+            }
+            return asset('storage/' . $image);
+        })->toArray();
+    }
 }

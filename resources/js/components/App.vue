@@ -41,12 +41,13 @@
           <div class="flex items-center">
             <button 
               @click="showCart = !showCart"
-              class="relative p-2 text-gray-600 hover:text-gray-900"
+              class="relative p-2 text-gray-600 hover:text-gray-900 transition-colors group"
+              :title="`Cart (${cartItems.length} items)`"
             >
               <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM20.25 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
               </svg>
-              <span v-if="cartItems.length > 0" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+              <span v-if="cartItems.length > 0" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium animate-pulse">
                 {{ cartItems.length }}
               </span>
             </button>
@@ -104,9 +105,15 @@
                 </p>
                 <button 
                   @click="addToCart(product)"
-                  class="mt-1 text-xs text-gray-500 hover:text-gray-700"
+                  :disabled="cartItems.some(item => item.id === product.id)"
+                  :class="[
+                    'mt-2 text-xs px-3 py-1 rounded-md transition-colors',
+                    cartItems.some(item => item.id === product.id)
+                      ? 'bg-green-100 text-green-800 cursor-not-allowed'
+                      : 'bg-gray-900 text-white hover:bg-gray-800'
+                  ]"
                 >
-                  Add to cart
+                  {{ cartItems.some(item => item.id === product.id) ? 'In Cart' : 'Add to cart' }}
                 </button>
               </div>
             </div>
@@ -179,7 +186,7 @@
             <a href="tel:7332211" class="hover:text-gray-900 transition-colors ml-4">7332211</a>
           </div>
           <div class="text-xs text-gray-500">
-            © 2024 TecHouse. All rights reserved.
+            © 2025 TecHouse. All rights reserved.
           </div>
         </div>
       </div>
@@ -270,6 +277,11 @@ export default {
       const existingItem = this.cartItems.find(item => item.id === product.id)
       if (!existingItem) {
         this.cartItems.push({ ...product })
+        // Show cart briefly to give feedback
+        this.showCart = true
+        setTimeout(() => {
+          this.showCart = false
+        }, 2000)
       }
     },
     removeFromCart(product) {

@@ -1,0 +1,9 @@
+<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="400" height="300" fill="#F3F4F6"/>
+<path d="M175 125H225V175H175V125Z" fill="#D1D5DB"/>
+<svg x="180" y="130" width="40" height="40" viewBox="0 0 40 40" fill="none">
+<path d="M20 10C25.5228 10 30 14.4772 30 20C30 25.5228 25.5228 30 20 30C14.4772 30 10 25.5228 10 20C10 14.4772 14.4772 10 20 10Z" fill="#9CA3AF"/>
+<path d="M20 15L22.5 20L20 25L17.5 20L20 15Z" fill="white"/>
+</svg>
+<text x="200" y="200" text-anchor="middle" fill="#6B7280" font-family="Arial" font-size="14">No Image</text>
+</svg>

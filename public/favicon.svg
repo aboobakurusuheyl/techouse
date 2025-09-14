@@ -1,0 +1,53 @@
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <!-- Outer red ring -->
+  <circle cx="16" cy="16" r="15" fill="#DC2626" stroke="#B91C1C" stroke-width="1"/>
+  
+  <!-- Circuit pattern -->
+  <g fill="#FCD34D" stroke="#FCD34D" stroke-width="0.5">
+    <line x1="8" y1="7" x2="12" y2="7"/>
+    <line x1="20" y1="7" x2="24" y2="7"/>
+    <line x1="4" y1="10" x2="8" y2="10"/>
+    <line x1="24" y1="10" x2="28" y2="10"/>
+    <line x1="6" y1="22" x2="10" y2="22"/>
+    <line x1="22" y1="22" x2="26" y2="22"/>
+    <line x1="5" y1="25" x2="9" y2="25"/>
+    <line x1="23" y1="25" x2="27" y2="25"/>
+    
+    <line x1="7" y1="5" x2="7" y2="10"/>
+    <line x1="9" y1="4" x2="9" y2="9"/>
+    <line x1="23" y1="5" x2="23" y2="10"/>
+    <line x1="25" y1="4" x2="25" y2="9"/>
+    <line x1="7" y1="22" x2="7" y2="27"/>
+    <line x1="9" y1="23" x2="9" y2="28"/>
+    <line x1="23" y1="22" x2="23" y2="27"/>
+    <line x1="25" y1="23" x2="25" y2="28"/>
+    
+    <circle cx="7" cy="7" r="1"/>
+    <circle cx="9" cy="7" r="1"/>
+    <circle cx="23" cy="7" r="1"/>
+    <circle cx="25" cy="7" r="1"/>
+    <circle cx="7" cy="10" r="1"/>
+    <circle cx="9" cy="10" r="1"/>
+    <circle cx="23" cy="10" r="1"/>
+    <circle cx="25" cy="10" r="1"/>
+    <circle cx="7" cy="22" r="1"/>
+    <circle cx="9" cy="22" r="1"/>
+    <circle cx="23" cy="22" r="1"/>
+    <circle cx="25" cy="22" r="1"/>
+    <circle cx="7" cy="25" r="1"/>
+    <circle cx="9" cy="25" r="1"/>
+    <circle cx="23" cy="25" r="1"/>
+    <circle cx="25" cy="25" r="1"/>
+  </g>
+  
+  <!-- Inner dark blue circle -->
+  <circle cx="16" cy="16" r="12" fill="#1E3A8A" stroke="#1E40AF" stroke-width="1"/>
+  
+  <!-- TEC HOUSE text -->
+  <text x="16" y="13" text-anchor="middle" fill="#FCD34D" font-family="Arial Black, Arial, sans-serif" font-size="4" font-weight="900">TEC</text>
+  
+  <!-- Horizontal line separator -->
+  <line x1="10" y1="15" x2="22" y2="15" stroke="#000000" stroke-width="0.5"/>
+  
+  <text x="16" y="18" text-anchor="middle" fill="#FCD34D" font-family="Arial Black, Arial, sans-serif" font-size="3" font-weight="900">HOUSE</text>
+</svg>

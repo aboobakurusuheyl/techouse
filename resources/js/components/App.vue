@@ -1,5 +1,14 @@
 <template>
   <div id="app">
+    <!-- Product Details Page -->
+    <ProductDetails 
+      v-if="currentView === 'product-details'" 
+      :product-id="currentProductId"
+      @back-to-products="goToProducts"
+    />
+    
+    <!-- Main Products Page -->
+    <div v-else>
     <!-- Navigation -->
     <nav class="bg-white shadow-sm">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -81,20 +90,22 @@
           <p class="text-gray-600 text-lg">No products found.</p>
         </div>
 
-        <div v-else class="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+
+        <div v-if="products.length > 0" class="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
           <div v-for="product in products" :key="product.id" class="group relative">
-            <img 
-              :src="productImage(product)" 
-              :alt="product.name" 
-              class="aspect-square w-full rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto lg:h-80" 
-            />
+            <button @click="viewProduct(product)" class="w-full">
+              <img 
+                :src="productImage(product)" 
+                :alt="product.name" 
+                class="aspect-square w-full rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto lg:h-80" 
+              />
+            </button>
             <div class="mt-4 flex justify-between">
               <div>
                 <h3 class="text-sm text-gray-700">
-                  <a :href="'#'" @click.prevent="viewProduct(product)">
-                    <span aria-hidden="true" class="absolute inset-0" />
+                  <button @click="viewProduct(product)" class="hover:text-gray-900 text-left">
                     {{ product.name }}
-                  </a>
+                  </button>
                 </h3>
                 <p class="mt-1 text-sm text-gray-500">{{ product.brand.name }}</p>
               </div>
@@ -104,16 +115,10 @@
                   {{ formatPrice(product.price) }}
                 </p>
                 <button 
-                  @click="addToCart(product)"
-                  :disabled="cartItems.some(item => item.id === product.id)"
-                  :class="[
-                    'mt-2 text-xs px-3 py-1 rounded-md transition-colors',
-                    cartItems.some(item => item.id === product.id)
-                      ? 'bg-green-100 text-green-800 cursor-not-allowed'
-                      : 'bg-gray-900 text-white hover:bg-gray-800'
-                  ]"
+                  @click.stop="addToCart(product)"
+                  class="mt-2 bg-gray-900 text-white text-xs px-3 py-1 rounded-md hover:bg-gray-800 transition-colors"
                 >
-                  {{ cartItems.some(item => item.id === product.id) ? 'In Cart' : 'Add to cart' }}
+                  Add to cart
                 </button>
               </div>
             </div>
@@ -191,17 +196,20 @@
         </div>
       </div>
     </footer>
+    </div> <!-- End Main Products Page -->
   </div>
 </template>
 
 <script>
 import axios from 'axios'
 import RfSymbol from './rf.vue'
+import ProductDetails from './ProductDetails.vue'
 
 export default {
   name: 'App',
   components: {
-    RfSymbol
+    RfSymbol,
+    ProductDetails
   },
   data() {
     return {
@@ -211,7 +219,9 @@ export default {
       searchQuery: '',
       loading: false,
       showCart: false,
-      cartItems: []
+      cartItems: [],
+      currentView: 'products', // 'products' or 'product-details'
+      currentProductId: null
     }
   },
   computed: {
@@ -275,8 +285,10 @@ export default {
     },
     addToCart(product) {
       const existingItem = this.cartItems.find(item => item.id === product.id)
+      
       if (!existingItem) {
         this.cartItems.push({ ...product })
+        
         // Show cart briefly to give feedback
         this.showCart = true
         setTimeout(() => {
@@ -291,8 +303,12 @@ export default {
       }
     },
     viewProduct(product) {
-      console.log('Viewing product:', product.name)
-      // Could open a modal or navigate to product detail page
+      this.currentProductId = product.id
+      this.currentView = 'product-details'
+    },
+    goToProducts() {
+      this.currentView = 'products'
+      this.currentProductId = null
     }
   }
 }

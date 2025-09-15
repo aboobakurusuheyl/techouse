@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Models\Product;
 use App\Models\Brand;
 use App\Models\Category;
+use App\Models\Navigation;
+use App\Models\SiteSetting;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -67,4 +69,23 @@ Route::get('/products/{slug}', function ($slug) {
         ->where('slug', $slug)
         ->where('is_active', true)
         ->firstOrFail();
+});
+
+// Navigation API routes
+Route::get('/navigation/{location}', function ($location) {
+    return Navigation::with('children')
+        ->where('location', $location)
+        ->where('is_active', true)
+        ->whereNull('parent_id')
+        ->orderBy('sort_order')
+        ->get();
+});
+
+// Site settings API routes
+Route::get('/site-settings', function () {
+    return SiteSetting::getAll();
+});
+
+Route::get('/site-settings/{group}', function ($group) {
+    return SiteSetting::getByGroup($group);
 });

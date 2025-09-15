@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('url')->nullable();
             $table->string('type')->default('link'); // link, dropdown, external
             $table->string('location')->default('header'); // header, footer
-            $table->integer('parent_id')->nullable();
+            $table->unsignedBigInteger('parent_id')->nullable();
             $table->integer('sort_order')->default(0);
             $table->boolean('is_active')->default(true);
             $table->string('icon')->nullable();

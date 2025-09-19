@@ -24,6 +24,18 @@
         :product-id="currentProductId"
         @back-to-products="goToProducts"
       />
+      
+      <!-- Privacy Policy Page -->
+      <PrivacyPolicy 
+        v-else-if="currentView === 'privacy-policy'"
+        @back-to-home="goToHome"
+      />
+      
+      <!-- Terms of Service Page -->
+      <TermsOfService 
+        v-else-if="currentView === 'terms-of-service'"
+        @back-to-home="goToHome"
+      />
     </AppLayout>
   </div>
 </template>
@@ -33,13 +45,17 @@ import axios from 'axios'
 import AppLayout from './AppLayout.vue'
 import HomePage from './HomePage.vue'
 import ProductDetails from './ProductDetails.vue'
+import PrivacyPolicy from './PrivacyPolicy.vue'
+import TermsOfService from './TermsOfService.vue'
 
 export default {
   name: 'App',
   components: {
     AppLayout,
     HomePage,
-    ProductDetails
+    ProductDetails,
+    PrivacyPolicy,
+    TermsOfService
   },
   data() {
     return {
@@ -64,6 +80,10 @@ export default {
       this.currentView = 'product-details'
     },
     goToProducts() {
+      this.currentView = 'home'
+      this.currentProductId = null
+    },
+    goToHome() {
       this.currentView = 'home'
       this.currentProductId = null
     },

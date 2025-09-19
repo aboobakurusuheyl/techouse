@@ -157,63 +157,25 @@
 
     <!-- Footer -->
     <footer class="bg-gray-50">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <!-- Company Info -->
-          <div>
-            <div class="flex items-center mb-4">
-              <img :src="siteSettings.logo_url || '/images/logo.webp'" :alt="siteSettings.site_name || 'TEC HOUSE'" class="h-8 w-8 mr-2" />
-              <h3 class="text-xl font-bold text-gray-900">{{ siteSettings.site_name || 'TEC HOUSE' }}</h3>
-            </div>
-            <p class="text-gray-600 text-sm mb-4">
-              {{ siteSettings.footer_description || siteSettings.site_tagline || 'Your trusted partner for quality electronics and technology products.' }}
-            </p>
-            <div class="text-xs text-gray-500">
-              {{ siteSettings.footer_copyright || '© 2025 TecHouse. All rights reserved.' }}
-            </div>
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="text-center">
+          <!-- Logo and Company Name -->
+          <div class="flex items-center justify-center mb-4">
+            <img :src="siteSettings.logo_url || '/images/logo.webp'" :alt="siteSettings.site_name || 'TEC HOUSE'" class="h-8 w-8 mr-2" />
+            <h3 class="text-xl font-bold text-gray-900">{{ siteSettings.site_name || 'TEC HOUSE' }}</h3>
           </div>
-
-          <!-- Contact Info -->
-          <div>
-            <h4 class="text-sm font-semibold text-gray-900 mb-4">Contact Us</h4>
-            <div class="space-y-2 text-sm text-gray-600">
-              <p v-if="siteSettings.contact_phone">📞 <a :href="`tel:${siteSettings.contact_phone}`" class="hover:text-gray-900">{{ siteSettings.contact_phone }}</a></p>
-              <p v-if="siteSettings.contact_email">📧 <a :href="`mailto:${siteSettings.contact_email}`" class="hover:text-gray-900">{{ siteSettings.contact_email }}</a></p>
-              <p v-if="siteSettings.contact_address">📍 {{ siteSettings.contact_address }}</p>
-            </div>
+          
+          <!-- Links and Contact -->
+          <div class="flex flex-wrap justify-center items-center space-x-6 text-sm text-gray-600 mb-4">
+            <button @click="$emit('navigate', 'privacy-policy')" class="hover:text-gray-900">Privacy Policy</button>
+            <button @click="$emit('navigate', 'terms-of-service')" class="hover:text-gray-900">Terms of Service</button>
+            <a href="tel:+9607771811" class="hover:text-gray-900">📞 +960 777-1811</a>
+            <a href="tel:+9607332211" class="hover:text-gray-900">📞 +960 733-2211</a>
+            <a v-if="siteSettings.contact_email" :href="`mailto:${siteSettings.contact_email}`" class="hover:text-gray-900">📧 {{ siteSettings.contact_email }}</a>
           </div>
-
-          <!-- Quick Links -->
-          <div>
-            <h4 class="text-sm font-semibold text-gray-900 mb-4">Quick Links</h4>
-            <div class="space-y-2 text-sm text-gray-600">
-              <p v-for="navItem in footerNavigation" :key="navItem.id">
-                <button 
-                  v-if="navItem.type === 'link' && navItem.url === '/products'"
-                  @click="$emit('navigate', 'home')" 
-                  class="hover:text-gray-900"
-                >
-                  {{ navItem.name }}
-                </button>
-                <a 
-                  v-else-if="navItem.type === 'link'"
-                  :href="navItem.url" 
-                  class="hover:text-gray-900"
-                >
-                  {{ navItem.name }}
-                </a>
-                <a 
-                  v-else-if="navItem.type === 'external'"
-                  :href="navItem.url" 
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="hover:text-gray-900"
-                >
-                  {{ navItem.name }}
-                </a>
-              </p>
-            </div>
-          </div>
+          
+          <!-- Copyright -->
+          <p class="text-xs text-gray-500">{{ siteSettings.footer_copyright || '© 2025 TEC HOUSE. All rights reserved.' }}</p>
         </div>
       </div>
     </footer>
@@ -315,6 +277,10 @@ const handleNavigation = (navItem) => {
   if (navItem.type === 'link') {
     if (navItem.url === '/products' || navItem.url === '/') {
       emit('navigate', 'home')
+    } else if (navItem.url === '/privacy-policy') {
+      emit('navigate', 'privacy-policy')
+    } else if (navItem.url === '/terms-of-service') {
+      emit('navigate', 'terms-of-service')
     } else {
       // For other internal links, you might want to handle them differently
       window.location.href = navItem.url

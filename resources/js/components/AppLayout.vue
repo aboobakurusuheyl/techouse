@@ -1,52 +1,106 @@
 <template>
   <div class="min-h-screen bg-gray-50">
-    <!-- Header -->
-    <nav class="bg-white shadow-sm">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
-          <div class="flex items-center">
-            <img :src="siteSettings.logo_url || '/images/logo.webp'" :alt="siteSettings.site_name || 'TEC HOUSE'" class="h-10 w-10 mr-3" />
-            <h1 class="text-2xl font-bold text-gray-900">{{ siteSettings.site_name || 'TEC HOUSE' }}</h1>
-          </div>
-          
-          <!-- Main Navigation -->
-          <div class="flex items-center space-x-6">
-            <button 
-              v-for="navItem in headerNavigation" 
-              :key="navItem.id"
-              @click="handleNavigation(navItem)"
-              :class="[
-                'px-3 py-2 text-sm font-medium transition-colors flex items-center',
-                isActiveNavItem(navItem) 
-                  ? 'text-gray-900 border-b-2 border-gray-900' 
-                  : 'text-gray-500 hover:text-gray-700'
-              ]"
-            >
-              <svg v-if="navItem.icon" class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="getIconPath(navItem.icon)" />
-              </svg>
-              {{ navItem.name }}
-            </button>
-          </div>
+          <!-- Header -->
+          <nav class="bg-white shadow-sm">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div class="flex justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center">
+                  <img :src="siteSettings.logo_url || '/images/logo.webp'" :alt="siteSettings.site_name || 'TEC HOUSE'" class="h-10 w-10 mr-3" />
+                  <h1 class="text-xl sm:text-2xl font-bold text-gray-900">{{ siteSettings.site_name || 'TEC HOUSE' }}</h1>
+                </div>
+                
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-6">
+                  <button 
+                    v-for="navItem in headerNavigation" 
+                    :key="navItem.id"
+                    @click="handleNavigation(navItem)"
+                    :class="[
+                      'px-3 py-2 text-sm font-medium transition-colors flex items-center',
+                      isActiveNavItem(navItem) 
+                        ? 'text-gray-900 border-b-2 border-gray-900' 
+                        : 'text-gray-500 hover:text-gray-700'
+                    ]"
+                  >
+                    <svg v-if="navItem.icon" class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="getIconPath(navItem.icon)" />
+                    </svg>
+                    {{ navItem.name }}
+                  </button>
+                </div>
+                
+                <!-- Desktop Cart -->
+                <div class="hidden md:flex items-center">
+                  <button 
+                    @click="showCart = !showCart"
+                    class="relative p-2 text-gray-600 hover:text-gray-900 transition-colors group"
+                    :title="`Cart (${cartItems.length} items)`"
+                  >
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM20.25 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                    </svg>
+                    <span v-if="cartItems.length > 0" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium animate-pulse">
+                      {{ cartItems.length }}
+                    </span>
+                  </button>
+                </div>
 
-          <!-- Cart -->
-          <div class="flex items-center">
-            <button 
-              @click="showCart = !showCart"
-              class="relative p-2 text-gray-600 hover:text-gray-900 transition-colors group"
-              :title="`Cart (${cartItems.length} items)`"
-            >
-              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM20.25 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
-              </svg>
-              <span v-if="cartItems.length > 0" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium animate-pulse">
-                {{ cartItems.length }}
-              </span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </nav>
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center space-x-2 mobile-menu-container">
+                  <!-- Mobile Cart -->
+                  <button 
+                    @click="showCart = !showCart"
+                    class="relative p-2 text-gray-600 hover:text-gray-900 transition-colors"
+                    :title="`Cart (${cartItems.length} items)`"
+                  >
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM20.25 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                    </svg>
+                    <span v-if="cartItems.length > 0" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium animate-pulse">
+                      {{ cartItems.length }}
+                    </span>
+                  </button>
+                  
+                  <!-- Hamburger Menu Button -->
+                  <button 
+                    @click="mobileMenuOpen = !mobileMenuOpen"
+                    class="p-2 text-gray-600 hover:text-gray-900 transition-colors"
+                    :class="{ 'text-gray-900': mobileMenuOpen }"
+                  >
+                    <svg v-if="!mobileMenuOpen" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                    <svg v-else class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Mobile Navigation Menu -->
+              <div v-show="mobileMenuOpen" class="md:hidden mobile-menu-container">
+                <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-gray-50 border-t">
+                  <button 
+                    v-for="navItem in headerNavigation" 
+                    :key="navItem.id"
+                    @click="handleNavigation(navItem); mobileMenuOpen = false"
+                    :class="[
+                      'block w-full text-left px-3 py-2 text-base font-medium transition-colors flex items-center',
+                      isActiveNavItem(navItem) 
+                        ? 'text-gray-900 bg-gray-200' 
+                        : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
+                    ]"
+                  >
+                    <svg v-if="navItem.icon" class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="getIconPath(navItem.icon)" />
+                    </svg>
+                    {{ navItem.name }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </nav>
 
     <!-- Main Content -->
     <main class="flex-1">
@@ -192,9 +246,26 @@ const props = defineProps({
 const emit = defineEmits(['navigate', 'filter-brand', 'add-to-cart', 'remove-from-cart'])
 
 const showCart = ref(false)
+const mobileMenuOpen = ref(false)
 const headerNavigation = ref([])
 const footerNavigation = ref([])
 const siteSettings = ref({})
+
+// Close mobile menu when clicking outside
+const closeMobileMenu = (event) => {
+  if (mobileMenuOpen.value && !event.target.closest('.mobile-menu-container')) {
+    mobileMenuOpen.value = false
+  }
+}
+
+// Add event listener for clicking outside
+onMounted(() => {
+  document.addEventListener('click', closeMobileMenu)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', closeMobileMenu)
+})
 
 // Expose showCart to parent component
 defineExpose({

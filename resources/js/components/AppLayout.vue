@@ -10,8 +10,8 @@
                   <h1 class="text-xl sm:text-2xl font-bold text-gray-900">{{ siteSettings.site_name || 'TEC HOUSE' }}</h1>
                 </div>
                 
-                <!-- Desktop Navigation -->
-                <div class="hidden md:flex items-center space-x-6">
+                <!-- Desktop Navigation - Commented out for now -->
+                <!-- <div class="hidden md:flex items-center space-x-6">
                   <button 
                     v-for="navItem in headerNavigation" 
                     :key="navItem.id"
@@ -28,7 +28,7 @@
                     </svg>
                     {{ navItem.name }}
                   </button>
-                </div>
+                </div> -->
                 
                 <!-- Desktop Cart -->
                 <div class="hidden md:flex items-center">
@@ -62,8 +62,8 @@
                     </span>
                   </button>
                   
-                  <!-- Hamburger Menu Button -->
-                  <button 
+                  <!-- Hamburger Menu Button - Commented out for now -->
+                  <!-- <button 
                     @click="mobileMenuOpen = !mobileMenuOpen"
                     class="p-2 text-gray-600 hover:text-gray-900 transition-colors"
                     :class="{ 'text-gray-900': mobileMenuOpen }"
@@ -74,12 +74,12 @@
                     <svg v-else class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
-                  </button>
+                  </button> -->
                 </div>
               </div>
 
-              <!-- Mobile Navigation Menu -->
-              <div v-show="mobileMenuOpen" class="md:hidden mobile-menu-container">
+              <!-- Mobile Navigation Menu - Commented out for now -->
+              <!-- <div v-show="mobileMenuOpen" class="md:hidden mobile-menu-container">
                 <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-gray-50 border-t">
                   <button 
                     v-for="navItem in headerNavigation" 
@@ -98,7 +98,7 @@
                     {{ navItem.name }}
                   </button>
                 </div>
-              </div>
+              </div> -->
             </div>
           </nav>
 

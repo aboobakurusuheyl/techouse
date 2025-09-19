@@ -19,11 +19,19 @@
 
       <!-- Image gallery -->
       <div class="mx-auto mt-6 max-w-2xl sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:gap-8 lg:px-8">
+        <!-- Mobile image -->
+        <div class="lg:hidden">
+          <img 
+            :src="productImage(product)" 
+            :alt="product && product.name ? product.name : 'Product'" 
+            class="w-full h-96 object-contain bg-gray-100 rounded-lg"
+          />
+        </div>
         <!-- Main image -->
         <img 
           :src="productImage(product)" 
           :alt="product && product.name ? product.name : 'Product'" 
-          class="row-span-2 aspect-[3/4] size-full rounded-lg object-cover max-lg:hidden" 
+          class="row-span-2 aspect-[3/4] size-full rounded-lg object-contain bg-gray-100 max-lg:hidden" 
         />
         
         <!-- Additional images if available -->
@@ -34,9 +42,9 @@
             :src="image" 
             :alt="(product && product.name ? product.name : 'Product') + ' view ' + (index + 1)" 
             :class="[
-              index === 0 ? 'col-start-2 aspect-[3/2] size-full rounded-lg object-cover max-lg:hidden' : '',
-              index === 1 ? 'col-start-2 row-start-2 aspect-[3/2] size-full rounded-lg object-cover max-lg:hidden' : '',
-              index === 2 ? 'row-span-2 aspect-[4/5] size-full object-cover sm:rounded-lg lg:aspect-[3/4]' : ''
+              index === 0 ? 'col-start-2 aspect-[3/2] size-full rounded-lg object-contain bg-gray-100 max-lg:hidden' : '',
+              index === 1 ? 'col-start-2 row-start-2 aspect-[3/2] size-full rounded-lg object-contain bg-gray-100 max-lg:hidden' : '',
+              index === 2 ? 'row-span-2 aspect-[4/5] size-full object-contain bg-gray-100 sm:rounded-lg lg:aspect-[3/4]' : ''
             ]"
           />
         </template>
@@ -46,7 +54,7 @@
           v-if="productImages.length === 1"
           :src="productImage(product)" 
           :alt="product && product.name ? product.name : 'Product'" 
-          class="row-span-2 aspect-[3/4] size-full rounded-lg object-cover"
+          class="row-span-2 aspect-[3/4] size-full rounded-lg object-contain bg-gray-100"
         />
       </div>
 
@@ -60,12 +68,31 @@
         <!-- Options -->
         <div class="mt-4 lg:row-span-3 lg:mt-0">
           <h2 class="sr-only">Product information</h2>
-          <p class="text-3xl tracking-tight text-gray-900 flex items-center">
-            <span class="text-2xl mr-2">₦</span>
-            <span v-text="product && product.price ? formatPrice(product.price) : '0.00'"></span>
-          </p>
+          <div class="flex items-center">
+            <p class="text-3xl tracking-tight text-gray-900 flex items-center">
+              <RfSymbol class="w-8 h-8 mr-2" />
+              <span v-text="product && product.price ? formatPrice(product.price) : '0.00'"></span>
+            </p>
+            <p v-if="product && product.sale_price" class="ml-4 text-lg text-gray-500 line-through flex items-center">
+              <RfSymbol class="w-5 h-5 mr-1" />
+              <span v-text="formatPrice(product.sale_price)"></span>
+            </p>
+          </div>
 
           <!-- Reviews placeholder -->
+          <!-- Product Info -->
+          <div class="mt-6 space-y-2">
+            <div v-if="product && product.sku" class="text-sm text-gray-600">
+              <span class="font-medium">SKU:</span> {{ product.sku }}
+            </div>
+            <div v-if="product && product.stock_quantity !== undefined" class="text-sm">
+              <span class="font-medium text-gray-600">Stock:</span>
+              <span :class="product.stock_quantity > 0 ? 'text-green-600' : 'text-red-600'">
+                {{ product.stock_quantity > 0 ? `${product.stock_quantity} in stock` : 'Out of stock' }}
+              </span>
+            </div>
+          </div>
+
           <div class="mt-6">
             <h3 class="sr-only">Reviews</h3>
             <div class="flex items-center">
@@ -117,10 +144,16 @@
 
             <button 
               type="submit" 
-              class="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-              :disabled="loading"
+              :class="[
+                'mt-10 flex w-full items-center justify-center rounded-md border border-transparent px-8 py-3 text-base font-medium focus:outline-none focus:ring-2 focus:ring-offset-2',
+                (product && product.stock_quantity === 0) || loading
+                  ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
+                  : 'bg-indigo-600 text-white hover:bg-indigo-700 focus:ring-indigo-500'
+              ]"
+              :disabled="loading || (product && product.stock_quantity === 0)"
             >
               <span v-if="loading">Adding...</span>
+              <span v-else-if="product && product.stock_quantity === 0">Out of Stock</span>
               <span v-else>Add to cart</span>
             </button>
           </form>
@@ -161,6 +194,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import axios from 'axios'
+import RfSymbol from './rf.vue'
 
 const props = defineProps({
   productId: {
@@ -207,16 +241,25 @@ const productSizes = computed(() => {
 })
 
 const productHighlights = computed(() => {
+  if (product.value && product.value.specifications) {
+    return Object.entries(product.value.specifications).map(([key, value]) => `${key}: ${value}`)
+  }
   return [
     'High quality materials',
-    'Durable construction',
+    'Durable construction', 
     'Modern design',
     'Easy to use'
   ]
 })
 
 const productDetails = computed(() => {
-  return (product.value && product.value.details) ? product.value.details : 'This product offers excellent quality and performance. Perfect for everyday use.'
+  if (product.value && product.value.description) {
+    return product.value.description
+  }
+  if (product.value && product.value.short_description) {
+    return product.value.short_description
+  }
+  return 'This product offers excellent quality and performance. Perfect for everyday use.'
 })
 
 // Methods

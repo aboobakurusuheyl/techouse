@@ -76,7 +76,7 @@
             <img 
               :src="productImage(product)" 
               :alt="product.name" 
-              class="aspect-square w-full rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto lg:h-80" 
+              class="aspect-square w-full rounded-md bg-gray-200 object-contain group-hover:opacity-75" 
             />
           </button>
           <div class="mt-4 flex justify-between">

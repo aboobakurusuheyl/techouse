@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="flex-1 flex flex-col">
     <!-- Search and Filters -->
     <div class="bg-white">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -54,7 +54,7 @@
     </div>
 
     <!-- Products Grid -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div v-if="loading" class="text-center py-12">
         <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
         <p class="mt-2 text-gray-600">Loading products...</p>

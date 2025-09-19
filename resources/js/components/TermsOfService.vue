@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white">
+  <div class="flex-1 bg-white">
     <div class="pt-6">
       <!-- Breadcrumb -->
       <nav aria-label="Breadcrumb">

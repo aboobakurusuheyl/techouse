@@ -89,13 +89,32 @@
               <p class="mt-1 text-sm text-gray-500">{{ product.brand.name }}</p>
             </div>
             <div class="text-right">
-              <p class="text-sm font-medium text-gray-900 flex items-center justify-end">
-                <RfSymbol class="w-4 h-4 mr-1" />
-                {{ formatPrice(product.price) }}
-              </p>
+              <!-- Price with discount -->
+              <div v-if="product.sale_price && product.sale_price < product.price" class="flex flex-col items-end">
+                <div class="flex items-center gap-2">
+                  <p class="text-sm font-medium text-gray-900 flex items-center">
+                    <RfSymbol class="w-4 h-4 mr-1" />
+                    {{ formatPrice(product.sale_price) }}
+                  </p>
+                  <span class="bg-red-100 text-red-800 text-xs px-1.5 py-0.5 rounded-full font-medium">
+                    -{{ Math.round(((product.price - product.sale_price) / product.price) * 100) }}%
+                  </span>
+                </div>
+                <p class="text-xs text-gray-500 line-through flex items-center">
+                  <RfSymbol class="w-3 h-3 mr-1" />
+                  {{ formatPrice(product.price) }}
+                </p>
+              </div>
+              <!-- Regular price -->
+              <div v-else>
+                <p class="text-sm font-medium text-gray-900 flex items-center justify-end">
+                  <RfSymbol class="w-4 h-4 mr-1" />
+                  {{ formatPrice(product.price) }}
+                </p>
+              </div>
               <button 
                 @click.stop="$emit('add-to-cart', product)"
-                class="mt-2 bg-gray-900 text-white text-xs px-3 py-1 rounded-md hover:bg-gray-800 transition-colors"
+                class="mt-2 bg-primary text-white text-xs px-3 py-1 rounded-md hover:bg-primary-600 transition-colors"
               >
                 Add to cart
               </button>

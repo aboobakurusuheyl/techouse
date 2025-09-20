@@ -47,7 +47,7 @@
         <template v-if="productImages.length > 1">
           <img 
             v-for="(image, index) in productImages.slice(1, 4)" 
-            :key="index"
+            :key="`additional-${index}`"
             :src="image" 
             :alt="(product && product.name ? product.name : 'Product') + ' view ' + (index + 1)" 
             :class="[
@@ -57,14 +57,6 @@
             ]"
           />
         </template>
-        
-        <!-- Fallback for single image -->
-        <img 
-          v-if="productImages.length === 1"
-          :src="productImage(product)" 
-          :alt="product && product.name ? product.name : 'Product'" 
-          class="row-span-2 aspect-[3/4] size-full rounded-lg object-contain bg-gray-100"
-        />
       </div>
 
       <!-- Product info -->
@@ -78,14 +70,29 @@
         <div class="mt-6 lg:row-span-3 lg:mt-0">
           <h2 class="sr-only">Product information</h2>
           <div class="flex items-center">
-            <p class="text-3xl tracking-tight text-gray-900 flex items-center">
-              <RfSymbol class="w-8 h-8 mr-2" />
-              <span v-text="product && product.price ? formatPrice(product.price) : '0.00'"></span>
-            </p>
-            <p v-if="product && product.sale_price" class="ml-4 text-lg text-gray-500 line-through flex items-center">
-              <RfSymbol class="w-5 h-5 mr-1" />
-              <span v-text="formatPrice(product.sale_price)"></span>
-            </p>
+            <!-- Show sale price if available and less than regular price -->
+            <div v-if="product && product.sale_price && product.sale_price < product.price" class="flex items-center">
+              <div class="flex items-center">
+                <p class="text-3xl tracking-tight text-gray-900 flex items-center">
+                  <RfSymbol class="w-8 h-8 mr-2" />
+                  <span v-text="formatPrice(product.sale_price)"></span>
+                </p>
+                <span class="ml-4 bg-red-100 text-red-800 text-sm px-2 py-1 rounded-full font-medium">
+                  -{{ Math.round(((product.price - product.sale_price) / product.price) * 100) }}%
+                </span>
+              </div>
+              <p class="ml-4 text-lg text-gray-500 line-through flex items-center">
+                <RfSymbol class="w-5 h-5 mr-1" />
+                <span v-text="formatPrice(product.price)"></span>
+              </p>
+            </div>
+            <!-- Show regular price if no sale price or sale price is not less than regular price -->
+            <div v-else>
+              <p class="text-3xl tracking-tight text-gray-900 flex items-center">
+                <RfSymbol class="w-8 h-8 mr-2" />
+                <span v-text="product && product.price ? formatPrice(product.price) : '0.00'"></span>
+              </p>
+            </div>
           </div>
 
           <!-- Reviews placeholder -->
@@ -177,7 +184,7 @@
             </div>
           </div>
 
-          <div class="mt-10">
+          <div v-if="productHighlights.length > 0" class="mt-10">
             <h3 class="text-sm font-medium text-gray-900">Highlights</h3>
             <div class="mt-4">
               <ul role="list" class="list-disc space-y-2 pl-4 text-sm">
@@ -188,7 +195,7 @@
             </div>
           </div>
 
-          <div class="mt-10">
+          <div v-if="productDetails" class="mt-10">
             <h2 class="text-sm font-medium text-gray-900">Details</h2>
             <div class="mt-4 space-y-6">
               <p class="text-sm text-gray-600" v-text="productDetails"></p>
@@ -237,54 +244,53 @@ const selectedSize = ref('')
 
 // Computed properties
 const productImages = computed(() => {
+  let images = []
+  
   if (product.value && product.value.image_urls && product.value.image_urls.length > 0) {
-    return product.value.image_urls
+    images = product.value.image_urls
+  } else if (product.value && product.value.images && product.value.images.length > 0) {
+    images = product.value.images
   }
-  if (product.value && product.value.images && product.value.images.length > 0) {
-    return product.value.images
+  
+  // Remove duplicates and filter out empty/null images
+  const uniqueImages = [...new Set(images.filter(img => img && img.trim() !== ''))]
+  
+  // If no images available, return placeholder
+  if (uniqueImages.length === 0) {
+    return [productImage(product.value)]
   }
-  return [productImage(product.value)]
+  
+  return uniqueImages
 })
 
 const productColors = computed(() => {
-  return [
-    { id: 'white', name: 'White', classes: 'bg-white checked:outline-gray-400' },
-    { id: 'gray', name: 'Gray', classes: 'bg-gray-200 checked:outline-gray-400' },
-    { id: 'black', name: 'Black', classes: 'bg-gray-900 checked:outline-gray-900' },
-  ]
+  // Colors are not available from the API, so return empty array
+  return []
 })
 
 const productSizes = computed(() => {
-  return [
-    { id: 'xs', name: 'XS', inStock: true },
-    { id: 's', name: 'S', inStock: true },
-    { id: 'm', name: 'M', inStock: true },
-    { id: 'l', name: 'L', inStock: true },
-    { id: 'xl', name: 'XL', inStock: true },
-    { id: '2xl', name: '2XL', inStock: false },
-  ]
+  // Sizes are not available from the API, so return empty array
+  return []
 })
 
 const productHighlights = computed(() => {
-  if (product.value && product.value.specifications) {
+  // Only show highlights if specifications are available from the API
+  if (product.value && product.value.specifications && Object.keys(product.value.specifications).length > 0) {
     return Object.entries(product.value.specifications).map(([key, value]) => `${key}: ${value}`)
   }
-  return [
-    'High quality materials',
-    'Durable construction', 
-    'Modern design',
-    'Easy to use'
-  ]
+  // Return empty array if no specifications available
+  return []
 })
 
 const productDetails = computed(() => {
-  if (product.value && product.value.description) {
+  if (product.value && product.value.description && product.value.description.trim() !== '') {
     return product.value.description
   }
-  if (product.value && product.value.short_description) {
+  if (product.value && product.value.short_description && product.value.short_description.trim() !== '') {
     return product.value.short_description
   }
-  return 'This product offers excellent quality and performance. Perfect for everyday use.'
+  // Return null if no real data available
+  return null
 })
 
 // Methods

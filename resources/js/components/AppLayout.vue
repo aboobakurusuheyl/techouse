@@ -147,7 +147,7 @@
               <span>Total:</span>
               <span>₦{{ formatPrice(cartTotal) }}</span>
             </div>
-            <button class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition-colors">
+            <button class="w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-primary-600 transition-colors">
               Checkout
             </button>
           </div>

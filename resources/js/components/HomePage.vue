@@ -29,7 +29,7 @@
               :class="[
                 'px-3 py-2 text-sm font-medium rounded-md transition-colors',
                 selectedBrand === null 
-                  ? 'bg-indigo-600 text-white' 
+                  ? 'bg-primary text-white' 
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               ]"
             >
@@ -42,7 +42,7 @@
               :class="[
                 'px-3 py-2 text-sm font-medium rounded-md transition-colors',
                 selectedBrand === brand.slug 
-                  ? 'bg-indigo-600 text-white' 
+                  ? 'bg-primary text-white' 
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               ]"
             >
@@ -56,7 +56,7 @@
     <!-- Products Grid -->
     <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div v-if="loading" class="text-center py-12">
-        <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+        <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
         <p class="mt-2 text-gray-600">Loading products...</p>
       </div>
 

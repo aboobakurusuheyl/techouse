@@ -3,7 +3,7 @@
     <!-- Loading State -->
     <div v-if="loading" class="flex items-center justify-center min-h-96">
       <div class="text-center">
-        <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+        <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
         <p class="mt-2 text-gray-600">Loading product...</p>
       </div>
     </div>
@@ -139,11 +139,11 @@
             <div v-if="productSizes.length > 0" class="mt-10">
               <div class="flex items-center justify-between">
                 <h3 class="text-sm font-medium text-gray-900">Size</h3>
-                <a href="#" class="text-sm font-medium text-indigo-600 hover:text-indigo-500">Size guide</a>
+                <a href="#" class="text-sm font-medium text-primary hover:text-primary-600">Size guide</a>
               </div>
               <fieldset aria-label="Choose a size" class="mt-4">
                 <div class="grid grid-cols-4 gap-3">
-                  <label v-for="size in productSizes" :key="size.id" :aria-label="size.name" class="group relative flex items-center justify-center rounded-md border border-gray-300 bg-white p-3 has-[:checked]:border-indigo-600 has-[:disabled]:border-gray-400 has-[:checked]:bg-indigo-600 has-[:disabled]:bg-gray-200 has-[:disabled]:opacity-25 has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-indigo-600">
+                  <label v-for="size in productSizes" :key="size.id" :aria-label="size.name" class="group relative flex items-center justify-center rounded-md border border-gray-300 bg-white p-3 has-[:checked]:border-primary has-[:disabled]:border-gray-400 has-[:checked]:bg-primary has-[:disabled]:bg-gray-200 has-[:disabled]:opacity-25 has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-primary">
                     <input type="radio" name="size" :value="size.id" v-model="selectedSize" :disabled="!size.inStock" class="absolute inset-0 appearance-none focus:outline focus:outline-0 disabled:cursor-not-allowed" />
                     <span class="text-sm font-medium uppercase text-gray-900 group-has-[:checked]:text-white" v-text="size.name"></span>
                   </label>
@@ -157,7 +157,7 @@
                 'mt-10 flex w-full items-center justify-center rounded-md border border-transparent px-8 py-3 text-base font-medium focus:outline-none focus:ring-2 focus:ring-offset-2',
                 (product && product.stock_quantity === 0) || loading
                   ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
-                  : 'bg-indigo-600 text-white hover:bg-indigo-700 focus:ring-indigo-500'
+                  : 'bg-primary text-white hover:bg-primary-600 focus:ring-primary'
               ]"
               :disabled="loading || (product && product.stock_quantity === 0)"
             >
@@ -208,7 +208,7 @@
         </div>
         <h3 class="text-lg font-medium text-gray-900 mb-2">Product not found</h3>
         <p class="text-gray-600 mb-4">The product you're looking for doesn't exist or has been removed.</p>
-        <button @click="$emit('back-to-products')" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">
+        <button @click="$emit('back-to-products')" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary-600">
           Back to Products
         </button>
       </div>

@@ -131,7 +131,10 @@
                 <div class="flex-1">
                   <h3 class="text-sm font-medium text-gray-900">{{ item.name }}</h3>
                   <p class="text-sm text-gray-500">{{ item.brand?.name }}</p>
-                  <p class="text-sm font-medium text-gray-900">₦{{ formatPrice(item.price) }}</p>
+                  <p class="text-sm font-medium text-gray-900 flex items-center">
+                    <RfSymbol class="w-3 h-3 mr-1" />
+                    {{ formatPrice(item.price) }}
+                  </p>
                 </div>
                 <button @click="$emit('remove-from-cart', item)" class="text-red-500 hover:text-red-700">
                   <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -145,7 +148,10 @@
           <div v-if="cartItems.length > 0" class="border-t p-4">
             <div class="flex justify-between text-lg font-semibold mb-4">
               <span>Total:</span>
-              <span>₦{{ formatPrice(cartTotal) }}</span>
+              <span class="flex items-center">
+                <RfSymbol class="w-4 h-4 mr-1" />
+                {{ formatPrice(cartTotal) }}
+              </span>
             </div>
             <button class="w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-primary-600 transition-colors">
               Checkout
@@ -185,6 +191,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import axios from 'axios'
+import RfSymbol from './rf.vue'
 
 const props = defineProps({
   currentView: {

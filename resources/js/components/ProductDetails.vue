@@ -324,17 +324,23 @@ const addToCart = () => {
 const loadProduct = async () => {
   try {
     loading.value = true
+    console.log('Loading product with ID:', props.productId)
     const response = await axios.get(`/api/products/${props.productId}`)
+    console.log('Product API response:', response.data)
     
     if (response.data && response.data.data) {
       product.value = response.data.data
+      console.log('Product loaded successfully:', product.value)
     } else if (response.data) {
       product.value = response.data
+      console.log('Product loaded (direct data):', product.value)
     } else {
       product.value = {}
+      console.log('No product data found')
     }
   } catch (error) {
     console.error('Error loading product:', error)
+    console.error('Error details:', error.response?.data)
     product.value = {}
   } finally {
     loading.value = false

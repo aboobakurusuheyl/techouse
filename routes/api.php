@@ -64,11 +64,23 @@ Route::get('/products', function (Request $request) {
     return $products;
 });
 
-Route::get('/products/{slug}', function ($slug) {
-    return Product::with(['brand', 'category'])
-        ->where('slug', $slug)
+Route::get('/products/{id}', function ($id) {
+    $product = Product::with(['brand', 'category'])
         ->where('is_active', true)
-        ->firstOrFail();
+        ->where(function ($query) use ($id) {
+            $query->where('id', $id)
+                  ->orWhere('slug', $id);
+        })
+        ->first();
+    
+    if (!$product) {
+        return response()->json(['error' => 'Product not found'], 404);
+    }
+    
+    // Transform the data to include proper image URLs
+    $product->image_urls = $product->image_urls;
+    
+    return response()->json(['data' => $product]);
 });
 
 // Navigation API routes

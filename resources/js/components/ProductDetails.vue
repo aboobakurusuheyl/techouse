@@ -1,6 +1,15 @@
 <template>
   <div class="flex-1 bg-white">
-    <div class="pt-6">
+    <!-- Loading State -->
+    <div v-if="loading" class="flex items-center justify-center min-h-96">
+      <div class="text-center">
+        <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+        <p class="mt-2 text-gray-600">Loading product...</p>
+      </div>
+    </div>
+
+    <!-- Product Content -->
+    <div v-else-if="product && product.id" class="pt-6">
       <!-- Breadcrumb -->
       <nav aria-label="Breadcrumb">
         <ol role="list" class="mx-auto flex max-w-2xl items-center space-x-2 px-4 sm:px-6 lg:max-w-7xl lg:px-8">
@@ -66,7 +75,7 @@
         </div>
 
         <!-- Options -->
-        <div class="mt-4 lg:row-span-3 lg:mt-0">
+        <div class="mt-6 lg:row-span-3 lg:mt-0">
           <h2 class="sr-only">Product information</h2>
           <div class="flex items-center">
             <p class="text-3xl tracking-tight text-gray-900 flex items-center">
@@ -159,7 +168,7 @@
           </form>
         </div>
 
-        <div class="py-10 lg:col-span-2 lg:col-start-1 lg:border-r lg:border-gray-200 lg:pb-16 lg:pr-8 lg:pt-6">
+        <div class="py-6 lg:py-10 lg:col-span-2 lg:col-start-1 lg:border-r lg:border-gray-200 lg:pb-16 lg:pr-8 lg:pt-6">
           <!-- Description and details -->
           <div>
             <h3 class="sr-only">Description</h3>
@@ -188,11 +197,27 @@
         </div>
       </div>
     </div>
+
+    <!-- Error State -->
+    <div v-else class="flex items-center justify-center min-h-96">
+      <div class="text-center">
+        <div class="text-gray-400 mb-4">
+          <svg class="mx-auto h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+          </svg>
+        </div>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">Product not found</h3>
+        <p class="text-gray-600 mb-4">The product you're looking for doesn't exist or has been removed.</p>
+        <button @click="$emit('back-to-products')" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">
+          Back to Products
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import axios from 'axios'
 import RfSymbol from './rf.vue'
 
@@ -203,7 +228,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['back-to-products'])
+const emit = defineEmits(['back-to-products', 'add-to-cart'])
 
 const product = ref({})
 const loading = ref(false)
@@ -277,6 +302,8 @@ const formatPrice = (price) => {
 }
 
 const addToCart = () => {
+  if (!product.value || !product.value.id) return
+  
   loading.value = true
   
   const cartItem = {
@@ -285,24 +312,41 @@ const addToCart = () => {
     selectedSize: selectedSize.value
   }
   
+  // Emit to parent component
+  emit('add-to-cart', cartItem)
+  
+  // Reset loading state
   setTimeout(() => {
-    console.log('Adding to cart:', cartItem)
     loading.value = false
-    alert('Product added to cart!')
-  }, 1000)
+  }, 500)
 }
 
 const loadProduct = async () => {
   try {
     loading.value = true
     const response = await axios.get(`/api/products/${props.productId}`)
-    product.value = response.data.data || response.data
+    
+    if (response.data && response.data.data) {
+      product.value = response.data.data
+    } else if (response.data) {
+      product.value = response.data
+    } else {
+      product.value = {}
+    }
   } catch (error) {
     console.error('Error loading product:', error)
+    product.value = {}
   } finally {
     loading.value = false
   }
 }
+
+// Watch for productId changes
+watch(() => props.productId, (newId) => {
+  if (newId) {
+    loadProduct()
+  }
+}, { immediate: true })
 
 onMounted(() => {
   loadProduct()
